@@ -1,0 +1,22 @@
+.container-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.card {
+  margin: 20px;
+  height: 350px;
+  width: 200px;
+}
+.card-img-top {
+  height: 100px;
+}
+.searchinput {
+  width: 400px;
+}
+.filtercontainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}

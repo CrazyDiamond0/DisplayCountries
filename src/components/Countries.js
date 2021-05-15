@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
+import Modal from "react-modal";
 
 export default function Countries(props) {
+  const [showmodel, setShowModel] = useState(false);
+  const [textinfo, setTextinfo] = useState();
+
   function showcountries() {
     const returncountries = [];
     for (let i = 0; i < props.countries.length; i++) {
@@ -43,30 +47,38 @@ export default function Countries(props) {
                       .toLowerCase() === props.searchname.toLowerCase()
                   ) {
                     returncountries.push(
-                      <div className="card">
-                        <img
-                          className="card-img-top"
-                          src={props.countries[`${i}`]["flag"]}
-                          alt="Card image cap"
-                        />
-                        <div className="card-body">
-                          <h5 className="card-title">
-                            {props.countries[`${i}`]["name"]}
-                          </h5>
-                          <p className="card-text">
-                            <label>
-                              Capital: {props.countries[`${i}`]["capital"]}
-                            </label>
-                            <label>
-                              Region: {props.countries[`${i}`]["region"]}
-                            </label>
-                            <label>
-                              Population:{" "}
-                              {props.countries[`${i}`]["population"]}
-                            </label>
-                          </p>
+                      <a
+                        id={props.countries[`${i}`]["alpha3Code"]}
+                        onClick={async (e) => {
+                          fetchcountry(e.currentTarget.id);
+                          await setShowModel(!showmodel);
+                        }}
+                      >
+                        <div className="card">
+                          <img
+                            className="card-img-top"
+                            src={props.countries[`${i}`]["flag"]}
+                            alt="Card image cap"
+                          />
+                          <div className="card-body">
+                            <h5 className="card-title">
+                              {props.countries[`${i}`]["name"]}
+                            </h5>
+                            <p className="card-text">
+                              <label>
+                                Capital: {props.countries[`${i}`]["capital"]}
+                              </label>
+                              <label>
+                                Region: {props.countries[`${i}`]["region"]}
+                              </label>
+                              <label>
+                                Population:{" "}
+                                {props.countries[`${i}`]["population"]}
+                              </label>
+                            </p>
+                          </div>
                         </div>
-                      </div>
+                      </a>
                     );
                   }
               }
@@ -132,5 +144,90 @@ export default function Countries(props) {
     return false;
   }
 
-  return <div>{showcountries()}</div>;
+  async function fetchcountry(country) {
+    const fetchcountryvalue = await fetch(
+      `https://restcountries.eu/rest/v2/alpha/${country}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        var currenttime;
+
+        try {
+          currenttime = Date().toLocaleString("en-US", {
+            timeZone: `${data["region"]}/${data["capital"]}`,
+            timeStyle: "long",
+            hourCycle: "h24",
+          });
+        } catch {
+          currenttime = "time not found";
+        }
+        const neighbourcountries = [];
+        const timezones = [];
+        const latlng = [];
+        const currencies = [];
+        const languages = [];
+        for (let i = 0; i < data["borders"].length; i++) {
+          neighbourcountries.push(
+            <a
+              id={data["borders"][i]}
+              onClick={(e) => {
+                fetchcountry(e.currentTarget.id);
+              }}
+            >
+              {" "}
+              {data["borders"][i]}{" "}
+            </a>
+          );
+        }
+        for (let i = 0; i < data["timezones"].length; i++) {
+          timezones.push(<label> {data["timezones"][i]} </label>);
+        }
+        for (let i = 0; i < data["languages"].length; i++) {
+          languages.push(<label> {data["languages"][i]["name"]} </label>);
+        }
+        for (let i = 0; i < data["currencies"].length; i++) {
+          currencies.push(<label> {data["currencies"][i]["name"]} </label>);
+        }
+
+        latlng.push(
+          <label className="latlng"> latitude: {data["latlng"][0]} </label>
+        );
+        latlng.push(
+          <label className="latlng"> longitude: {data["latlng"][1]} </label>
+        );
+
+        console.log("dasdsadsa", neighbourcountries);
+        setTextinfo(
+          <div>
+            <img className="img-model" src={data["flag"]}></img>
+            <div>Country name: {data["name"]}</div>
+            <div>Alpha 2 code: {data["alpha2Code"]}</div>
+            <div>Capital: {data["capital"]}</div>
+            <div>Region: {data["region"]}</div>
+            <div>Population: {data["population"]}</div>
+            <div>LatLng: {latlng}</div>
+            <div>Area: {data["area"]}</div>
+            <div>Timezone: {timezones}</div>
+            <div>Current time: {currenttime}</div>
+            <div>Neighbour countries: {neighbourcountries}</div>
+            <div>Currencies: {currencies}</div>
+            <div>Official languages: {languages}</div>
+          </div>
+        );
+      });
+  }
+
+  return (
+    <div>
+      {showcountries()}
+
+      <Modal isOpen={showmodel}>
+        <div className="container">
+          <h2>Country</h2>
+          <div>{textinfo}</div>
+          <button onClick={() => setShowModel(!showmodel)}>Close</button>
+        </div>
+      </Modal>
+    </div>
+  );
 }

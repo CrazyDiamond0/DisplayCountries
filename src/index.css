@@ -20,3 +20,10 @@
   flex-wrap: wrap;
   justify-content: center;
 }
+.img-model {
+  height: 10rem;
+}
+.latlng {
+  margin-left: 5px;
+  margin-right: 5px;
+}

@@ -10,20 +10,105 @@
   width: 200px;
 }
 .card-img-top {
-  height: 100px;
-}
-.searchinput {
-  width: 400px;
-}
-.filtercontainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  object-fit: fill;
+  width: 8rem !important;
+  height: 8rem;
+  border-radius: 100rem;
+  align-self: center;
+  border: 0.2rem solid hsl(208, 7%, 46%);
 }
 .img-model {
+  margin-bottom: 1rem;
   height: 10rem;
+  width: auto;
+  align-self: center;
 }
+.model-label {
+  width: 200px;
+  font-weight: bold;
+}
+.searchinput {
+  max-width: 450px;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+@keyframes animation1 {
+  from {
+    margin-top: -352px;
+  }
+  to {
+    margin-top: 0rem;
+  }
+}
+@keyframes animation2 {
+  from {
+    margin-top: 0rem;
+  }
+  to {
+    margin-top: -352px;
+  }
+}
+
+.filtercontainer {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  background-color: hsl(208, 7%, 46%);
+  padding: 2rem;
+}
+
 .latlng {
   margin-left: 5px;
   margin-right: 5px;
+}
+.filter-label {
+  color: white;
+  width: 100px;
+}
+.not-found {
+  color: white;
+}
+.neighbour {
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
+  margin-left: 0.5rem;
+  margin-rign: 0.5rem;
+}
+
+.filter-item {
+  align-items: center;
+  margin: 0.5rem;
+  display: flex;
+  flex-direction: row;
+}
+.select-item {
+  margin-left: 1rem;
+}
+
+.card {
+  transition: 0.5s !important;
+}
+
+.card:hover {
+  cursor: pointer;
+  opacity: 0.6;
+  top: -10px;
+}
+body {
+  background: hsl(0, 0%, 20%) !important;
+}
+.container-modal {
+  max-width: 40rem;
+
+  display: flex;
+  flex-direction: column;
+}
+.buttom-modal {
+  align-self: center;
+  width: 10rem !important;
+}
+
+.languages-modal {
+  margin-right: 0.5rem;
 }

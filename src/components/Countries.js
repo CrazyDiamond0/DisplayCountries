@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
+import Clock from "./Clock";
 
 export default function Countries(props) {
+  Modal.setAppElement("#root");
   const [showmodel, setShowModel] = useState(false);
   const [textinfo, setTextinfo] = useState();
 
@@ -42,12 +44,19 @@ export default function Countries(props) {
                         0,
                         props.searchname.length
                       ) === props.searchname) ||
+                    (props.countries[`${i}`]["alpha3Code"] !== null &&
+                      props.countries[`${i}`]["alpha3Code"].substring(
+                        0,
+                        props.searchname.length
+                      ) === props.searchname) ||
                     props.countries[`${i}`]["capital"]
                       .substring(0, props.searchname.length)
                       .toLowerCase() === props.searchname.toLowerCase()
                   ) {
                     returncountries.push(
                       <a
+                        key={props.countries[`${i}`]["name"]}
+                        href
                         id={props.countries[`${i}`]["alpha3Code"]}
                         onClick={async (e) => {
                           fetchcountry(e.currentTarget.id);
@@ -58,7 +67,7 @@ export default function Countries(props) {
                           <img
                             className="card-img-top"
                             src={props.countries[`${i}`]["flag"]}
-                            alt="Card image cap"
+                            alt=""
                           />
                           <div className="card-body">
                             <h5 className="card-title">
@@ -86,12 +95,9 @@ export default function Countries(props) {
           }
         }
       }
-      if (typeof props.countries[`${i}`]["numericCode"] == "object") {
-        console.log(props.countries[`${i}`]["numericCode"]);
-      }
     }
     if (returncountries.length === 0) {
-      returncountries.push(<div>No info founded</div>);
+      returncountries.push(<div className="not-found">No info founded</div>);
     }
 
     return <div className="container container-grid">{returncountries}</div>;
@@ -150,17 +156,7 @@ export default function Countries(props) {
     )
       .then((response) => response.json())
       .then((data) => {
-        var currenttime;
-
-        try {
-          currenttime = Date().toLocaleString("en-US", {
-            timeZone: `${data["region"]}/${data["capital"]}`,
-            timeStyle: "long",
-            hourCycle: "h24",
-          });
-        } catch {
-          currenttime = "time not found";
-        }
+        //console.log(`${data["region"]}/${data["capital"]}`);
         const neighbourcountries = [];
         const timezones = [];
         const latlng = [];
@@ -169,6 +165,7 @@ export default function Countries(props) {
         for (let i = 0; i < data["borders"].length; i++) {
           neighbourcountries.push(
             <a
+              className="btn btn-secondary neighbour"
               id={data["borders"][i]}
               onClick={(e) => {
                 fetchcountry(e.currentTarget.id);
@@ -183,7 +180,12 @@ export default function Countries(props) {
           timezones.push(<label> {data["timezones"][i]} </label>);
         }
         for (let i = 0; i < data["languages"].length; i++) {
-          languages.push(<label> {data["languages"][i]["name"]} </label>);
+          languages.push(
+            <label className="languages-modal">
+              {" "}
+              {data["languages"][i]["name"]}{" "}
+            </label>
+          );
         }
         for (let i = 0; i < data["currencies"].length; i++) {
           currencies.push(<label> {data["currencies"][i]["name"]} </label>);
@@ -196,36 +198,96 @@ export default function Countries(props) {
           <label className="latlng"> longitude: {data["latlng"][1]} </label>
         );
 
-        console.log("dasdsadsa", neighbourcountries);
         setTextinfo(
-          <div>
+          <div className="container-modal">
             <img className="img-model" src={data["flag"]}></img>
-            <div>Country name: {data["name"]}</div>
-            <div>Alpha 2 code: {data["alpha2Code"]}</div>
-            <div>Capital: {data["capital"]}</div>
-            <div>Region: {data["region"]}</div>
-            <div>Population: {data["population"]}</div>
-            <div>LatLng: {latlng}</div>
-            <div>Area: {data["area"]}</div>
-            <div>Timezone: {timezones}</div>
-            <div>Current time: {currenttime}</div>
-            <div>Neighbour countries: {neighbourcountries}</div>
-            <div>Currencies: {currencies}</div>
-            <div>Official languages: {languages}</div>
+            <div>
+              <label className="model-label">Country name: </label>
+              {data["name"]}
+            </div>
+            <div>
+              <label className="model-label">Alpha 2 code: </label>
+              {data["alpha2Code"]}
+            </div>
+            <div>
+              <label className="model-label">Capital: </label>
+              {data["capital"]}
+            </div>
+            <div>
+              <label className="model-label">Region: </label>
+              {data["region"]}
+            </div>
+            <div>
+              <label className="model-label">Population: </label>
+              {data["population"]}
+            </div>
+            <div>
+              <label className="model-label">LatLng: </label>
+              {latlng}
+            </div>
+            <div>
+              <label className="model-label">Area: </label>
+              {data["area"]}
+            </div>
+            <div>
+              <label className="model-label">Timezone: </label>
+              {timezones}
+            </div>
+            <div>
+              <label className="model-label">Current time: </label>
+              <Clock region={data["region"]} capital={data["capital"]}></Clock>
+            </div>
+            <div>
+              <label className="model-label">Neighbour countries: </label>
+              {neighbourcountries}
+            </div>
+            <div>
+              <label className="model-label">Currencies: </label>
+              {currencies}
+            </div>
+            <div>
+              <label className="model-label">Official languages: </label>
+              {languages}
+            </div>
           </div>
         );
       });
   }
 
+  const customStyles = {
+    content: {
+      top: "100px",
+      left: "100px",
+      right: "100px",
+      bottom: "100px",
+      border: "1px solid #ccc",
+      overflow: "auto",
+      borderRadius: "4px",
+      paddingBottom: "10px",
+      background: "#f8f9fa",
+    },
+    overlay: {
+      background: "rgba(0, 0, 0, 0.3)",
+    },
+  };
+
   return (
     <div>
       {showcountries()}
 
-      <Modal isOpen={showmodel}>
-        <div className="container">
-          <h2>Country</h2>
+      <Modal
+        isOpen={showmodel}
+        style={customStyles}
+        onRequestClose={() => setShowModel(false)}
+      >
+        <div className="container container-modal">
           <div>{textinfo}</div>
-          <button onClick={() => setShowModel(!showmodel)}>Close</button>
+          <button
+            className="btn btn-secondary buttom-modal"
+            onClick={() => setShowModel(!showmodel)}
+          >
+            Close
+          </button>
         </div>
       </Modal>
     </div>

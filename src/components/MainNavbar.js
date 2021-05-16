@@ -12,19 +12,19 @@ export default function MainNavbar(props) {
   const [currencyselected, setCurrencySelected] = useState("none");
 
   const filtermenu = (
-    <div className="filtercontainer">
-      <div>
-        <label>Region:</label>
+    <div className="container filtercontainer" style={filteranimation()}>
+      <div className="filter-item">
+        <label className="filter-label">Region:</label>
         <select
-          className="form-select"
+          className="form-control select-item"
           onChange={(e) => setRegionSelected(e.target.value)}
         >
           <option value={"none"}>none</option>
           {selectorcreator("region")}
         </select>
       </div>
-      <div>
-        <label>Population:</label>
+      <div className="filter-item">
+        <label className="filter-label">Population:</label>
         <input
           className="form-control me-2 searchinput"
           placeholder="min population"
@@ -38,31 +38,31 @@ export default function MainNavbar(props) {
           onChange={manpopulationhandleChange}
         />
       </div>
-      <div>
-        <label>Language:</label>
+      <div className="filter-item">
+        <label className="filter-label">Language:</label>
 
         <select
-          className="form-select"
+          className="form-control select-item"
           onChange={(e) => setLanguageSelected(e.target.value)}
         >
           <option value={"none"}>none</option>
           {selectorcreator2("languages", "name")}
         </select>
       </div>
-      <div>
-        <label>Time Zone:</label>
+      <div className="filter-item">
+        <label className="filter-label">Time Zone:</label>
         <select
-          className="form-select"
+          className="form-control select-item"
           onChange={(e) => setTimeZoneSelected(e.target.value)}
         >
           <option value={"none"}>none</option>
           {selectorcreator3("timezones")}
         </select>
       </div>
-      <div>
-        <label>Currency:</label>
+      <div className="filter-item">
+        <label className="filter-label">Currency:</label>
         <select
-          className="form-select"
+          className="form-control select-item"
           onChange={(e) => setCurrencySelected(e.target.value)}
         >
           <option value={"none"}>none</option>
@@ -147,26 +147,43 @@ export default function MainNavbar(props) {
     return finalarray;
   }
 
+  function filteranimation() {
+    if (showfilter === false) {
+      return {
+        animationName: "animation2",
+        animationDuration: "0.5s",
+        animationFillMode: "forwards",
+      };
+    }
+    return {
+      animationName: "animation1",
+      animationDuration: "0.5s",
+      animationFillMode: "forwards",
+    };
+  }
+
   return (
-    <div className="container">
+    <div className="container ">
       <nav className="navbar navbar-light bg-light ">
         <div className="container-fluid">
-          <a className="navbar-brand">Countries</a>
+          <a className="navbar-brand" href>
+            Countries
+          </a>
           <input
             className="form-control me-2 searchinput"
-            placeholder="Search Country"
+            placeholder="Search Country by name, capital or code"
             aria-label="Search"
             onChange={searchhandleChange}
           />
           <button
-            className="btn btn-outline-success"
+            className="btn btn-secondary"
             onClick={() => setShowFilter(!showfilter)}
           >
-            Filter
+            More Filters
           </button>
         </div>
       </nav>
-      {showfilter === true ? filtermenu : null}
+      {filtermenu}
       <Countries
         countries={props.countries}
         searchname={searchname}

@@ -97,7 +97,7 @@ export default function Countries(props) {
       }
     }
     if (returncountries.length === 0) {
-      returncountries.push(<div className="not-found">No info founded</div>);
+      returncountries.push(<div className="not-found">No country founded</div>);
     }
 
     return <div className="container container-grid">{returncountries}</div>;
